@@ -1,0 +1,17 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Iinclude",
+      "-Wall",
+      "-Wextra",
+      "-o",
+      "transcript",
+      "./src/main.c"
+    ],
+    "directory": "/home/fednold/projects/transcript",
+    "file": "/home/fednold/projects/transcript/src/main.c",
+    "output": "/home/fednold/projects/transcript/transcript"
+  }
+]
