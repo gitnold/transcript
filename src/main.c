@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "transcript.h"
 
@@ -40,6 +41,7 @@ int main(void) {
     }
     
     write_md_file("transcript.md", all_units, unit_count, longest_row, header);
+    write_pdf_file();
 
     return 0;
 }
@@ -47,8 +49,6 @@ int main(void) {
 Details get_details() {
     Details details;
     
-
-
     printf("Enter unit code [CCS 2203] : \n");
     fgets(details.unit_code, BUFFER_SIZE, stdin);
     details.unit_code[strcspn(details.unit_code, "\n")] = 0;
@@ -57,7 +57,6 @@ Details get_details() {
     fgets(details.unit_name, BUFFER_SIZE, stdin);
     details.unit_name[strcspn(details.unit_name, "\n")] = 0;
     
-
     printf("Enter Mark : ");
     scanf("%lf", &details.mark);
     getchar(); // consume newline
@@ -138,4 +137,41 @@ char get_grade(double mark) {
     }
 }
 
+void write_pdf_file() {
+    // check if pandoc is installed.
+    #if defined (__linux__)
+        if (system("pandoc -v > /dev/null 2>&1") != 0) {
+            printf("Error: pandoc is not installed. Please install it to generate PDF.\n");
+            printf("On Fedora, you can install it with: sudo dnf install pandoc\n");
+            return;
+        }
+    #elif defined (_WIN32)
+        if (system("pandoc -v > nul 2>&1") != 0) {
+            printf("Error: pandoc is not installed. Please install it to generate PDF.\n");
+            printf("On Windows, you can install it with: choco install pandoc\n");
+            return;
+        }
+    #else
+        #error "Platform not supported!!"
+    #endif
 
+    #if defined (__linux__)
+        system("pandoc transcript.md -o ./assets/transcript.html --standalone --css ./assets/styles.css --css ./assets/theme.css");
+        if (system("brave-browser --headless --disable-gpu --print-to-pdf=transcript.pdf ./assets/transcript.html > /dev/null 2>&1") == 0) {
+            printf("PDF generated successfully with Brave.\n");
+        } else if (system("google-chrome --headless --disable-gpu --print-to-pdf=transcript.pdf ./assets/transcript.html > /dev/null 2>&1") == 0) {
+            printf("PDF generated successfully with Google Chrome.\n");
+        } else if (system("firefox --headless --print-to-pdf=transcript.pdf ./assets/transcript.html > /dev/null 2>&1") == 0) {
+            printf("PDF generated successfully with Firefox.\n");
+        } else {
+            printf("Error: No suitable browser (Brave, Google Chrome, or Firefox) found for PDF conversion.\n");
+        }
+    #elif defined (_WIN32)
+        system("pandoc transcript.md -o .\\assets\\transcript.html --standalone --css .\\assets\\styles.css --css .\\assets\\theme.css");
+        if (system("msedge --headless --disable-gpu --print-to-pdf=transcript.pdf .\\assets\\transcript.html > nul 2>&1") == 0) {
+            printf("PDF generated successfully with Microsoft Edge.\n");
+        } else {
+            printf("Error: Microsoft Edge not found or failed to convert to PDF.\n");
+        }
+    #endif
+}
