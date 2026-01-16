@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #define BUFFER_SIZE 20
 #define MID_BUFFER_SIZE 50
-#define un_long unsigned long
+typedef unsigned long un_long;
 
 typedef struct {
     char student_name[MID_BUFFER_SIZE];

@@ -47,8 +47,6 @@ int main(void) {
 Details get_details() {
     Details details;
     
-
-
     printf("Enter unit code [CCS 2203] : \n");
     fgets(details.unit_code, BUFFER_SIZE, stdin);
     details.unit_code[strcspn(details.unit_code, "\n")] = 0;
@@ -118,23 +116,17 @@ char get_grade(double mark) {
     switch ((int)mark) {
         case 0 ... 39:
             return 'E';
-            break;
         case 40 ... 49:
             return 'D';
-            break;
         case 50 ... 59:
             return 'C';
-            break;
         case 60 ... 69:
             return 'B';
-            break;
         case 70 ... 100:
             return 'A';
-            break;
         default:
             printf("Invalid mark %lf!! Mark must be between 0 to 100!!\n", mark);
             return 'Y';
-            break;
     }
 }
 
